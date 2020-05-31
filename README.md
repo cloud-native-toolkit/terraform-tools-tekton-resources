@@ -11,7 +11,7 @@ Terraform module to install Tekton resources (tasks and pipelines) into the clus
 
 ```hcl-terraform
 module "dev_tools_tekton_resources" {
-  source = "github.com/ibm-garage-cloud/terraform-tools-tekton-resources.git?v1.0.0"
+  source = "github.com/ibm-garage-cloud/terraform-tools-tekton-resources.git?v1.1.0"
 
   cluster_type             = module.dev_cluster.type_code
   cluster_config_file_path = module.dev_cluster.config_file_path

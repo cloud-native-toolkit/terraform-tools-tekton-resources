@@ -17,7 +17,7 @@ mkdir -p "${TMP_DIR}"
 URL="${GIT_URL}/releases/download/${REVISION}/release.yaml"
 
 echo "*** Waiting for Tekton API group to be available"
-until oc get tasks
+until kubectl get tasks
 do
     echo '>>> waiting for Tekton APIs availability'
     sleep 60
