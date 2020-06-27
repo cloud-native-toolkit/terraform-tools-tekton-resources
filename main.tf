@@ -13,6 +13,7 @@ resource "null_resource" "get_latest_release" {
 }
 
 data "local_file" "latest-release" {
+  depends_on = [null_resource.get_latest_release]
   filename = local.version_file
 }
 
