@@ -14,7 +14,8 @@ if [[ -z "${TMP_DIR}" ]]; then
 fi
 mkdir -p "${TMP_DIR}"
 
-URL="${GIT_URL}/releases/download/${REVISION}/release.yaml"
+URL=$(curl -s "${GIT_URL}/releases/tags/${REVISION}" | grep release.yaml | grep browser_download_url | sed -E 's/.*"(https:.*)"/\1/g')
+echo "Tekton task url: ${URL}"
 
 echo "*** Waiting for Tekton API group to be available"
 until kubectl get tasks
