@@ -3,6 +3,13 @@ provider "null" {
 
 locals {
   tmp_dir = "${path.cwd}/.tmp"
+  version_file = "${local.tmp_dir}/tekton-resources-version.val"
+}
+
+resource "null_resource" "get_latest_release" {
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/get-latest-release.sh ${var.git_url} ${var.revision} > ${local.version_file}"
+  }
 }
 
 resource "null_resource" "tekton_resources" {
@@ -11,10 +18,11 @@ resource "null_resource" "tekton_resources" {
   triggers = {
     kubeconfig         = var.cluster_config_file_path
     tools_namespace    = var.resource_namespace
+    revision           = file(local.version_file)
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-tekton-resources.sh ${self.triggers.tools_namespace} ${var.pre_tekton} ${var.revision} ${var.git_url}"
+    command = "${path.module}/scripts/deploy-tekton-resources.sh ${self.triggers.tools_namespace} ${var.pre_tekton} ${self.triggers.revision} ${var.git_url}"
 
     environment = {
       KUBECONFIG       = self.triggers.kubeconfig
@@ -24,7 +32,7 @@ resource "null_resource" "tekton_resources" {
 
   provisioner "local-exec" {
     when    = destroy
-    command = "${path.module}/scripts/destroy-tekton-resources.sh ${self.triggers.tools_namespace}"
+    command = "${path.module}/scripts/destroy-tekton-resources.sh ${self.triggers.tools_namespace} ${self.triggers.revision}"
 
     environment = {
       KUBECONFIG = self.triggers.kubeconfig
