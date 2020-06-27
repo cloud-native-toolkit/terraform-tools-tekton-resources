@@ -13,6 +13,7 @@ resource "null_resource" "get_latest_release" {
 }
 
 resource "null_resource" "tekton_resources" {
+  depends_on = [null_resource.get_latest_release]
   count = var.cluster_type == "ocp4" ? 1 : 0
 
   triggers = {
