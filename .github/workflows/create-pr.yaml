@@ -1,0 +1,28 @@
+name: Create PR
+
+# Controls when the action will run. Triggered when another module posts a repository_dispatch event
+on:
+  repository_dispatch:
+    types: [released]
+
+jobs:
+  update-modules:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update modules
+        run: ./.github/scripts/update-modules.sh
+        env:
+          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: $(( secrets.TOKEN }}
+          branch: patch
+          delete-branch: true
+          labels: chore,patch,automerge
+          reviewers: ${{ secrets.ASSIGNEES }}
