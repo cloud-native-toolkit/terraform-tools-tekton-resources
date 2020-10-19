@@ -1,3 +1,4 @@
+Name: Notify Iteration Zero
 on:
   release:
     types: [published]
