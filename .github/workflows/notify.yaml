@@ -1,4 +1,4 @@
-Name: Notify Iteration Zero
+name: Notify Iteration Zero
 on:
   release:
     types: [published]
