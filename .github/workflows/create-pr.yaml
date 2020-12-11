@@ -15,7 +15,17 @@ jobs:
           token: ${{ secrets.TOKEN }}
 
       - name: Update modules
-        run: ./.github/scripts/update-modules.sh
+        id: update-modules
+        run: |
+          OUTPUT_FILE="$PWD/module-output"
+
+          ./.github/scripts/update-modules.sh "${OUTPUT_FILE}"
+
+          source "${OUTPUT_FILE}"
+          rm "${OUTPUT_FILE}"
+
+          echo "::set-output name=git-slug::${GIT_SLUG}"
+          echo "::set-output name=release::${RELEASE}"
         env:
           GITHUB_USERNAME: ${{ secrets.USERNAME }}
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
@@ -23,6 +33,8 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
+          title: "Updates ${{ steps.update-modules.outputs.git-slug }} to ${{ steps.update-modules.outputs.release }}"
+          commit-message: "Updates ${{ steps.update-modules.outputs.git-slug }} to ${{ steps.update-modules.outputs.release }}"
           token: ${{ secrets.TOKEN }}
           branch: patch
           delete-branch: true
