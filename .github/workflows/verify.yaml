@@ -38,6 +38,17 @@ jobs:
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
 
+  label:
+    # The type of runner that the job will run on
+    needs: verify
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+
+    steps:
+      - uses: actions/labeler@main
+        with:
+          repo-token: "${{ secrets.TOKEN }}"
+  
   release:
     #    if: ${{ github.event_name == 'push' }}
     needs: verify
