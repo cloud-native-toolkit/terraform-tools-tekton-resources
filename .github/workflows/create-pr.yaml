@@ -26,5 +26,5 @@ jobs:
           token: ${{ secrets.TOKEN }}
           branch: patch
           delete-branch: true
-          labels: chore,patch,automerge
+          labels: chore,patch
           reviewers: ${{ secrets.ASSIGNEES }}
