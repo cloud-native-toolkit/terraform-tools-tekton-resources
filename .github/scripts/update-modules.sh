@@ -3,6 +3,8 @@
 SCRIPT_DIR=$(cd $(dirname "$0"); pwd -P)
 REPO_DIR=$(cd ${SCRIPT_DIR}/../..; pwd -P)
 
+OUTPUT_FILE="$1"
+
 if [[ -n "$GITHUB_USERNAME" ]] && [[ -n "$GITHUB_TOKEN" ]]; then
   GITHUB_AUTH="-u ${GITHUB_USERNAME}:${GITHUB_TOKEN}"
 fi
@@ -17,6 +19,11 @@ latest_release=$(curl ${GITHUB_AUTH} -s "${git_release_url}" | grep tag_name | s
 
 if [[ -n "${latest_release}" ]]; then
   echo "  ++ Latest release for ${git_slug} is ${latest_release}"
+
+  if [[ -n "${OUTPUT_FILE}" ]]; then
+    echo "GIT_SLUG=$git_slug" > "${OUTPUT_FILE}"
+    echo "RELEASE=${latest_release}" >> "${OUTPUT_FILE}"
+  fi
 
   current_release=$(cat "${REPO_DIR}/variables.tf" | grep -A 3 'variable "revision"' | grep "default" | sed -E "s/ +default += \"(.*)\"/\1/g")
 
