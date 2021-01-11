@@ -62,6 +62,61 @@ versions:
         type: string
         description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
         optional: true
+    version: v2.2.8
+  - platforms:
+      - ocp4
+    dependencies:
+      - id: cluster
+        refs:
+          - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
+            version: ">= 1.7.0"
+          - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
+            version: ">= 2.0.0"
+      - id: namespace
+        refs:
+          - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
+            version: ">= 2.1.0"
+      - id: tekton
+        refs:
+          - source: github.com/ibm-garage-cloud/terraform-tools-tekton
+            version: ">= 2.0.1"
+    variables:
+      - name: cluster_type
+        moduleRef:
+          id: cluster
+          output: type_code
+        type: string
+        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+      - name: cluster_config_file_path
+        moduleRef:
+          id: cluster
+          output: config_file_path
+        type: string
+        description: The path to the config file for the cluster
+      - name: tekton_namespace
+        moduleRef:
+          id: tekton
+          output: namespace
+      - name: resource_namespace
+        moduleRef:
+          id: namespace
+          output: name
+          discriminator: tools
+        type: string
+        description: The namespace where the tekton tasks will be deployed
+        optional: true
+      - name: pre_tekton
+        type: string
+        description: Flag indicating that the Tekton installed version is pre 0.7.0
+        optional: true
+      - name: revision
+        type: string
+        description: The revision Cloud Native Toolkit Tekton tasks and pipelines
+        optional: true
+      - name: git_url
+        type: string
+        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        optional: true
     version: v2.2.7
   - platforms:
       - ocp4
