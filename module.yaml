@@ -37,8 +37,15 @@ versions:
       moduleRef:
         id: tekton
         output: namespace
+      scope: ignore
     - name: resource_namespace
       moduleRef:
         id: namespace
         output: name
         discriminator: tools
+    - name: pre_tekton
+      scope: ignore
+    - name: revision
+      scope: ignore
+    - name: git_url
+      scope: ignore

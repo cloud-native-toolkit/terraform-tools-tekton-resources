@@ -5,6 +5,7 @@ Terraform module to install Tekton resources (tasks and pipelines) into the clus
 ## Dependencies
 
 - Cluster module
+- Namespace module
 - Tekton module
 
 ## Example usage
@@ -15,7 +16,6 @@ module "dev_tools_tekton_resources" {
 
   cluster_type             = module.dev_cluster.type_code
   cluster_config_file_path = module.dev_cluster.config_file_path
-  tekton_namespace         = module.dev_tools_tekton_release.namespace
-  resource_namespace       = module.dev_cluster_namespaces.tools_namespace_name
+  resource_namespace       = module.dev_capture_state.namespace
 }
 ```
