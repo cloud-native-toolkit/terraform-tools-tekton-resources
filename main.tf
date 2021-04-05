@@ -1,5 +1,3 @@
-provider "null" {
-}
 
 locals {
   tmp_dir = "${path.cwd}/.tmp"
