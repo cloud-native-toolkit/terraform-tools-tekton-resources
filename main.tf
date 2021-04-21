@@ -29,7 +29,7 @@ resource "null_resource" "tekton_resources" {
 
     environment = {
       KUBECONFIG       = self.triggers.kubeconfig
-      TMP_DIR          = "${local.tmp_dir}"
+      TMP_DIR          = local.tmp_dir
     }
   }
 
