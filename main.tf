@@ -5,6 +5,10 @@ locals {
 }
 
 resource "null_resource" "get_latest_release" {
+  triggers = {
+    always_run = timestamp()
+  }
+
   provisioner "local-exec" {
     command = "${path.module}/scripts/get-latest-release.sh ${var.git_url} ${var.revision} ${local.version_file}"
   }
@@ -12,6 +16,7 @@ resource "null_resource" "get_latest_release" {
 
 data "local_file" "latest-release" {
   depends_on = [null_resource.get_latest_release]
+
   filename = local.version_file
 }
 
