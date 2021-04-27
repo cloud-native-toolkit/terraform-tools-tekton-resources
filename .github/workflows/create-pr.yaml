@@ -36,6 +36,7 @@ jobs:
           title: "Updates ${{ steps.update-modules.outputs.git-slug }} to ${{ steps.update-modules.outputs.release }}"
           commit-message: "Updates ${{ steps.update-modules.outputs.git-slug }} to ${{ steps.update-modules.outputs.release }}"
           token: ${{ secrets.TOKEN }}
+          signoff: true
           branch: patch
           delete-branch: true
           labels: chore,patch
