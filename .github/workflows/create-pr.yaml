@@ -39,5 +39,5 @@ jobs:
           signoff: true
           branch: patch
           delete-branch: true
-          labels: chore,patch
+          labels: chore,patch,automerge
           reviewers: ${{ secrets.ASSIGNEES }}
