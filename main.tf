@@ -4,6 +4,12 @@ locals {
   version_file = "${local.tmp_dir}/tekton-resources-version.val"
 }
 
+resource null_resource print_support_namespace {
+  provisioner "local-exec" {
+    command = "echo 'Support namespace: ${var.support_namespace}'"
+  }
+}
+
 resource "null_resource" "get_latest_release" {
   triggers = {
     always_run = timestamp()
@@ -15,7 +21,7 @@ resource "null_resource" "get_latest_release" {
 }
 
 data "local_file" "latest-release" {
-  depends_on = [null_resource.get_latest_release]
+  depends_on = [null_resource.get_latest_release, null_resource.print_support_namespace]
 
   filename = local.version_file
 }
