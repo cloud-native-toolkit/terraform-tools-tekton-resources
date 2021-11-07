@@ -31,3 +31,9 @@ variable "git_url" {
   description = "The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines"
   default     = " https://api.github.com/repos/ibm/ibm-garage-tekton-tasks"
 }
+
+variable "support_namespace" {
+  type        = string
+  description = "The namespace where supporting infrastructure and configuration are running (e.g. buildah-unprivileged daemon set)"
+  default     = ""
+}
