@@ -12,33 +12,104 @@ versions:
       - ocp4
     dependencies:
       - id: cluster
-        refs:
-          - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-            version: ">= 1.7.0"
-          - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
-          - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+        interface: github.com/cloud-native-toolkit/automation-modules#cluster
+        refs: []
       - id: namespace
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
-        refs:
-          - source: github.com/cloud-native-toolkit/terraform-tools-tekton
-            version: ">= 2.0.1"
+        interface: github.com/cloud-native-toolkit/automation-modules#tekton
+        refs: []
       - id: buildah
         optional: true
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ocp-buildah-unprivileged
-            version: ">= 1.1.0"
+            version: '>= 1.1.0'
+    variables:
+      - name: cluster_type
+        type: string
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
+        moduleRef:
+          id: cluster
+          output: platform.type_code
+      - name: cluster_config_file_path
+        type: string
+        description: The path to the config file for the cluster
+        moduleRef:
+          id: cluster
+          output: config_file_path
+      - name: resource_namespace
+        type: string
+        description: The namespace where the tekton tasks will be deployed
+        default: tools
+        moduleRef:
+          id: namespace
+          output: name
+      - name: pre_tekton
+        type: string
+        description: Flag indicating that the Tekton installed version is pre 0.7.0
+        default: 'false'
+        scope: ignore
+      - name: revision
+        type: string
+        description: The revision Cloud Native Toolkit Tekton tasks and pipelines
+        default: v2.7.7
+        scope: ignore
+      - name: git_url
+        type: string
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
+        default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
+        scope: ignore
+      - name: support_namespace
+        type: string
+        description: >-
+          The namespace where supporting infrastructure and configuration are
+          running (e.g. buildah-unprivileged daemon set)
+        default: ''
+        optional: true
+        moduleRef:
+          id: buildah
+          output: namespace
+    version: v2.3.1
+    outputs: []
+  - platforms:
+      - ocp4
+    dependencies:
+      - id: cluster
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
+            version: '>= 1.7.0'
+          - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
+            version: '>= 1.0.0'
+          - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
+            version: '>= 2.0.0'
+      - id: namespace
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-k8s-namespace
+            version: '>= 2.1.0'
+      - id: tekton
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-tekton
+            version: '>= 2.0.1'
+      - id: buildah
+        optional: true
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-ocp-buildah-unprivileged
+            version: '>= 1.1.0'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -64,13 +135,15 @@ versions:
           id: buildah
           output: namespace
         type: string
-        description: The namespace where supporting infrastructure and configuration are running (e.g. buildah-unprivileged daemon set)
-        default: ""
+        description: >-
+          The namespace where supporting infrastructure and configuration are
+          running (e.g. buildah-unprivileged daemon set)
+        default: ''
       - name: pre_tekton
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -81,7 +154,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.3.0
@@ -92,26 +167,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -136,7 +213,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -147,7 +224,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.24
@@ -158,26 +237,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -202,7 +283,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -213,7 +294,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.23
@@ -224,26 +307,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -268,7 +353,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -279,7 +364,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.22
@@ -290,26 +377,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -334,7 +423,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -345,7 +434,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.21
@@ -356,26 +447,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -400,7 +493,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -411,7 +504,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.20
@@ -422,26 +517,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -466,7 +563,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -477,7 +574,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.19
@@ -488,26 +587,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -532,7 +633,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -543,7 +644,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.18
@@ -554,26 +657,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -598,7 +703,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -609,7 +714,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.17
@@ -620,26 +727,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -664,7 +773,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -675,7 +784,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.16
@@ -686,26 +797,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -730,7 +843,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -741,7 +854,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.15
@@ -752,26 +867,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -796,7 +913,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -807,7 +924,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.14
@@ -818,26 +937,28 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: platform.type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -862,7 +983,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -873,7 +994,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.13
@@ -883,24 +1006,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -925,7 +1050,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -936,7 +1061,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.12
@@ -946,24 +1073,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -988,7 +1117,7 @@ versions:
         scope: ignore
         type: string
         description: Flag indicating that the Tekton installed version is pre 0.7.0
-        default: "false"
+        default: 'false'
         optional: true
       - name: revision
         scope: ignore
@@ -999,7 +1128,9 @@ versions:
       - name: git_url
         scope: ignore
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         default: ' https://api.github.com/repos/ibm/ibm-garage-tekton-tasks'
         optional: true
     version: v2.2.11
@@ -1009,24 +1140,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1055,7 +1188,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.10
   - platforms:
@@ -1064,24 +1199,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1110,7 +1247,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.9
   - platforms:
@@ -1119,24 +1258,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1165,7 +1306,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.8
   - platforms:
@@ -1174,24 +1317,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1220,7 +1365,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.7
   - platforms:
@@ -1229,24 +1376,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1275,7 +1424,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.6
   - platforms:
@@ -1284,24 +1435,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1330,7 +1483,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.5
   - platforms:
@@ -1339,24 +1494,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1385,7 +1542,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.4
   - platforms:
@@ -1394,24 +1553,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1440,7 +1601,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.3
   - platforms:
@@ -1449,24 +1612,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1495,7 +1660,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.2
   - platforms:
@@ -1504,24 +1671,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1550,7 +1719,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.1
   - platforms:
@@ -1559,24 +1730,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1605,7 +1778,9 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.2.0
   - platforms:
@@ -1614,24 +1789,26 @@ versions:
       - id: cluster
         refs:
           - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
       - id: namespace
         refs:
           - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-            version: ">= 2.1.0"
+            version: '>= 2.1.0'
       - id: tekton
         refs:
           - source: github.com/ibm-garage-cloud/terraform-tools-tekton
-            version: ">= 2.0.1"
+            version: '>= 2.0.1'
     variables:
       - name: cluster_type
         moduleRef:
           id: cluster
           output: type_code
         type: string
-        description: The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)
+        description: >-
+          The type of cluster that should be created (openshift or ocp3 or ocp4
+          or kubernetes)
       - name: cluster_config_file_path
         moduleRef:
           id: cluster
@@ -1662,6 +1839,8 @@ versions:
         optional: true
       - name: git_url
         type: string
-        description: The git api url containing Cloud-Native Toolkit Tekton tasks and pipelines
+        description: >-
+          The git api url containing Cloud-Native Toolkit Tekton tasks and
+          pipelines
         optional: true
     version: v2.1.12
