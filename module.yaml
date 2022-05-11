@@ -11,21 +11,15 @@ versions:
     - ocp4
   dependencies:
     - id: cluster
-      refs:
-        - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-          version: ">= 1.7.0"
-        - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-          version: ">= 1.0.0"
-        - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-          version: ">= 2.0.0"
+      interface: github.com/cloud-native-toolkit/automation-modules#cluster
+      refs: []
     - id: namespace
       refs:
         - source: github.com/cloud-native-toolkit/terraform-k8s-namespace
           version: ">= 2.1.0"
     - id: tekton
-      refs:
-        - source: github.com/cloud-native-toolkit/terraform-tools-tekton
-          version: ">= 2.0.1"
+      interface: github.com/cloud-native-toolkit/automation-modules#tekton
+      refs: []
     - id: buildah
       optional: true
       refs:
@@ -40,11 +34,6 @@ versions:
       moduleRef:
         id: cluster
         output: config_file_path
-    - name: tekton_namespace
-      moduleRef:
-        id: tekton
-        output: namespace
-      scope: ignore
     - name: resource_namespace
       moduleRef:
         id: namespace

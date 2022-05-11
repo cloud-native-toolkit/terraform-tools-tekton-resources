@@ -1,7 +1,6 @@
 
 locals {
   tmp_dir = "${path.cwd}/.tmp"
-  version_file = "${local.tmp_dir}/tekton-resources-version.val"
 }
 
 resource null_resource print_support_namespace {
@@ -10,20 +9,21 @@ resource null_resource print_support_namespace {
   }
 }
 
-resource "null_resource" "get_latest_release" {
-  triggers = {
-    always_run = timestamp()
-  }
+module setup_clis {
+  source = "cloud-native-toolkit/clis/util"
+  version = "1.10.0"
 
-  provisioner "local-exec" {
-    command = "${path.module}/scripts/get-latest-release.sh ${var.git_url} ${var.revision} ${local.version_file}"
-  }
+  clis = ["kubectl", "jq"]
 }
 
-data "local_file" "latest-release" {
-  depends_on = [null_resource.get_latest_release, null_resource.print_support_namespace]
+data external latest_release {
+  program = ["bash", "${path.module}/scripts/get-latest-release.sh"]
 
-  filename = local.version_file
+  query = {
+    git_url = var.git_url
+    revision = var.revision
+    bin_dir = module.setup_clis.bin_dir
+  }
 }
 
 resource "null_resource" "tekton_resources" {
@@ -32,15 +32,17 @@ resource "null_resource" "tekton_resources" {
   triggers = {
     kubeconfig      = var.cluster_config_file_path
     tools_namespace = var.resource_namespace
-    revision        = data.local_file.latest-release.content
+    revision        = data.external.latest_release.result.release
+    bin_dir         = module.setup_clis.bin_dir
   }
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/deploy-tekton-resources.sh ${self.triggers.tools_namespace} ${var.pre_tekton} ${self.triggers.revision} ${var.git_url}"
 
     environment = {
-      KUBECONFIG       = self.triggers.kubeconfig
-      TMP_DIR          = local.tmp_dir
+      TMP_DIR    = local.tmp_dir
+      KUBECONFIG = self.triggers.kubeconfig
+      BIN_DIR    = self.triggers.bin_dir
     }
   }
 
@@ -50,6 +52,7 @@ resource "null_resource" "tekton_resources" {
 
     environment = {
       KUBECONFIG = self.triggers.kubeconfig
+      BIN_DIR    = self.triggers.bin_dir
     }
   }
 }

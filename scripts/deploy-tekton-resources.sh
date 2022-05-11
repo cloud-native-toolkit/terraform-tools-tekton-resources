@@ -5,6 +5,10 @@ PRE_TEKTON="$2"
 REVISION="$3"
 GIT_URL="$4"
 
+if [[ -n "${BIN_DIR}" ]]; then
+  export PATH="${BIN_DIR}:${PATH}"
+fi
+
 if [[ -n "${KUBECONFIG_IKS}" ]]; then
     export KUBECONFIG="${KUBECONFIG_IKS}"
 fi

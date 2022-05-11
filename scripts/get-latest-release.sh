@@ -1,35 +1,28 @@
 #!/usr/bin/env bash
 
-GIT_URL="$1"
-RELEASE="$2"
-OUT_FILE="$3"
+INPUT=$(tee)
+
+BIN_DIR=$(echo "${INPUT}" | grep "bin_dir" | sed -E 's/.*"bin_dir": ?"([^"]*)".*/\1/g')
+
+export PATH="${BIN_DIR}:${PATH}"
+
+GIT_URL=$(echo "${INPUT}" | jq -r '.git_url // empty')
+RELEASE=$(echo "${INPUT}" | jq -r '.revision // empty')
 
 if [[ -z "${GIT_URL}" ]]; then
-  echo "The GIT_URL is required as the first argument"
+  echo "The GIT_URL is required" >&2
   exit 1
 fi
 
 if [[ -z "${RELEASE}" ]]; then
-  echo "The RELEASE is required as the second argument"
-  exit 1
-fi
-
-if [[ -z "${OUT_FILE}" ]]; then
-  echo "The OUT_FILE is required as the third argument"
+  echo "The RELEASE is required" >&2
   exit 1
 fi
 
 set -e
 
-BASE_DIR=$(dirname "${OUT_FILE}")
-echo "Creating directory for outfile - ${BASE_DIR}"
-mkdir -p "${BASE_DIR}"
-
 if [[ "${RELEASE}" == "latest" ]]; then
-  LATEST_RELEASE=$(curl -s "${GIT_URL}/releases/latest" | grep tag_name | sed -E "s/.*\"tag_name\": \"(.*)\".*/\1/")
-  echo "Latest release: ${LATEST_RELEASE}"
-  echo -n "${LATEST_RELEASE}" > "${OUT_FILE}"
-else
-  echo "Release: ${RELEASE}"
-  echo -n "${RELEASE}" > "${OUT_FILE}"
+  RELEASE=$(curl -s "${GIT_URL}/releases/latest" | jq -r '.tag_name')
 fi
+
+jq -n --arg RELEASE "${RELEASE}" '{"release": $RELEASE}'
