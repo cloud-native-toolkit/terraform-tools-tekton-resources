@@ -5,7 +5,7 @@ locals {
 
 resource null_resource print_support_namespace {
   provisioner "local-exec" {
-    command = "echo 'Support namespace: ${var.support_namespace}'"
+    command = "echo 'Namespaces: support_namespace=${var.support_namespace}, tekton_namespace=${var.tekton_namespace}'"
   }
 }
 
@@ -28,6 +28,7 @@ data external latest_release {
 
 resource "null_resource" "tekton_resources" {
   count = var.cluster_type == "ocp4" ? 1 : 0
+  depends_on = [null_resource.print_support_namespace]
 
   triggers = {
     kubeconfig      = var.cluster_config_file_path

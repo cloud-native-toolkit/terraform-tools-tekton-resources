@@ -18,6 +18,7 @@ versions:
         - source: github.com/cloud-native-toolkit/terraform-k8s-namespace
           version: ">= 2.1.0"
     - id: tekton
+      optional: true
       interface: github.com/cloud-native-toolkit/automation-modules#tekton
       refs: []
     - id: buildah
@@ -43,6 +44,11 @@ versions:
       moduleRef:
         id: buildah
         output: namespace
+    - name: tekton_namespace
+      optional: true
+      moduleRef:
+        id: tekton
+        output: tekton_namespace
     - name: pre_tekton
       scope: ignore
     - name: revision

@@ -37,3 +37,9 @@ variable "support_namespace" {
   description = "The namespace where supporting infrastructure and configuration are running (e.g. buildah-unprivileged daemon set)"
   default     = ""
 }
+
+variable "tekton_namespace" {
+  type        = string
+  description = "The namespace where tekton is running. This variable is used to make sure tekton has installed before installing the tekton resources"
+  default     = ""
+}
