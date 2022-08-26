@@ -23,7 +23,7 @@ variable "pre_tekton" {
 variable "revision" {
   type        = string
   description = "The revision Cloud Native Toolkit Tekton tasks and pipelines"
-  default     = "v2.7.7"
+  default     = "v3.0.3"
 }
 
 variable "git_url" {
